@@ -12,6 +12,10 @@ using System.Speech.Synthesis;
 using System.IO;
 using System.Xml;
 using System.Speech.AudioFormat;
+using System.Threading;
+using System.Management;
+using System.Diagnostics;
+using System.Windows;
 
 namespace Victor
 {
@@ -19,38 +23,47 @@ namespace Victor
     {
         SpeechRecognitionEngine _recognizer = new SpeechRecognitionEngine();
         SpeechSynthesizer VICTOR = new SpeechSynthesizer();
-        string QEvent;
-        string ProcWindow;
-        double timer = 10;
-        int count = 1;
+        string ProcWindow;        
         Random rnd = new Random();
+
         public Form1()
         {
-            InitializeComponent();
+            InitializeComponent();            
         }
-
         private void Form1_Load_1(object sender, EventArgs e)
         {
             _recognizer.SetInputToDefaultAudioDevice();
             _recognizer.LoadGrammar(new DictationGrammar());
             _recognizer.LoadGrammar(new Grammar(new GrammarBuilder(new Choices(File.ReadAllLines(@"E:\commands.vic")))));
             _recognizer.SpeechRecognized += new EventHandler<SpeechRecognizedEventArgs>(_recognizer_SpeechRecognized);
-            _recognizer.RecognizeAsync(RecognizeMode.Multiple);
+            _recognizer.RecognizeAsync(RecognizeMode.Multiple);            
         }
 
-        void _recognizer_SpeechRecognized(object sender, SpeechRecognizedEventArgs e)
+       public void _recognizer_SpeechRecognized(object sender, SpeechRecognizedEventArgs e)
         {
-            
+            DateTime t2 = DateTime.Now;
+            DateTime t1 = Convert.ToDateTime("00:00:01 AM");
+            DateTime t3 = Convert.ToDateTime("11:59:59 AM");
+            DateTime t4 = Convert.ToDateTime("12:00:01 PM");
+            DateTime t5 = Convert.ToDateTime("03:59:59 PM");
+            DateTime t6 = Convert.ToDateTime("04:00:01 PM");
+            DateTime t7 = Convert.ToDateTime("07:59:59 PM");
+            DateTime t8 = Convert.ToDateTime("08:00:01 PM");
+            DateTime t9 = Convert.ToDateTime("11:59:59 PM");
             int ranNum = rnd.Next(1, 10);
             string speech = e.Result.Text;
+            String battstatus;
+            PowerStatus pwr = SystemInformation.PowerStatus;
+            battstatus = SystemInformation.PowerStatus.BatteryChargeStatus.ToString();
+            String battlife;
+            battlife = SystemInformation.PowerStatus.BatteryLifePercent.ToString();
+            String batt;
+            batt = SystemInformation.PowerStatus.BatteryLifeRemaining.ToString();
+            String num = SystemInformation.PowerStatus.ToString();
+           string sam =  SystemInformation.PowerStatus.PowerLineStatus.ToString();
             switch (speech)
-            {
-
-                
-                //GREETINGS 
-               
-              
-                 
+            {                
+                //GREETINGS                              
                 case "Thank you Victor":
                 case "Thanks Victor":
                     VICTOR.Speak("Anytime for you Sir");
@@ -62,19 +75,85 @@ namespace Victor
                 case "I am good Victor":
                     VICTOR.Speak("I know you will be, Sir!");
                     break;
-                case "Good Morning Victor":
-                    VICTOR.Speak("Very Good Morning Sir");
+                case "Good Morning Victor":                  
+                    if (t2==t1 || t2==t3 || t2 < t3) 
+                        VICTOR.Speak("Very Good Morning Sir!");
+                    else if (t2 == t4 || t2 == t5 || t2 < t5)
+                    {
+                        VICTOR.Speak("Sorry, It's Afternoon Sir!");
+                        VICTOR.Speak("I suggest u to please adjust your time, Sir");
+                    }
+                    else if (t2 == t6 || t2 == t7 || t2 < t7)
+                    {
+                        VICTOR.Speak("Sorry, It's Evening Sir!");
+                        VICTOR.Speak("I suggest u to please adjust your time, Sir");
+                    }
+                    else if (t2 == t8 || t2 == t9 || t2 < t9)
+                    {
+                        VICTOR.Speak("Sorry, It's Night time Sir!");
+                        VICTOR.Speak("I suggest u to please adjust your time, Sir");
+                    }
                     break;
                 case "Good Afternoon Victor":
-                    VICTOR.Speak("Very Good Afternoon Sir");
-                        break;
+                    if (t2 == t1 || t2 == t3 || t2 < t3)
+                    {
+                        VICTOR.Speak("Sorry, It's Morning Sir!");
+                        VICTOR.Speak("I suggest u to please adjust your time, Sir");
+                    }
+                    else if (t2 == t4 || t2 == t5 || t2 < t5)   
+                        VICTOR.Speak("Very Good Afternoon Sir");
+                    else if (t2 == t6 || t2 == t7 || t2 < t7)
+                    {
+                        VICTOR.Speak("Sorry, It's Evening time Sir!");
+                        VICTOR.Speak("I suggest u to please adjust your time, Sir");
+                    }
+                    else if (t2 == t8 || t2 == t9 || t2 < t9)    
+                    {
+                        VICTOR.Speak("Sorry, It's Night time Sir!");
+                        VICTOR.Speak("I suggest u to please adjust your time, Sir");
+                    }
+                    break;
                      case "Good Evening Victor":
-                    VICTOR.Speak("Very Good Evening Sir");
+                    if (t2 == t1 || t2 == t3 || t2 < t3)
+                    {
+                        VICTOR.Speak("Sorry, It's Morning Sir!");
+                        VICTOR.Speak("I suggest u to please adjust your time, Sir");
+                    }
+                    else if (t2 == t4 || t2 == t5 || t2 < t5)
+                    {
+                        VICTOR.Speak("Sorry, It's Afternoon Sir");
+                        VICTOR.Speak("I suggest u to please adjust your time, Sir");
+                    }
+                    else if (t2 == t6 || t2 == t7 || t2 < t7)
+                        VICTOR.Speak("Very Good Evening Sir");
+                    else if (t2 == t8 || t2 == t9 || t2 < t9)
+                    {
+                        VICTOR.Speak("Sorry, It's Night time Sir!");
+                        VICTOR.Speak("I suggest u to please adjust your time, Sir");
+                    }
                         break;
                      case "Good Night Victor":
-                        VICTOR.Speak("Good Night Sir, Have a nice sleep");
-                        Close();
-                        break;
+                        if (t2 == t1 || t2 == t3 || t2 < t3)
+                        {
+                            VICTOR.Speak("Sorry, It's Morning time Sir!");
+                            VICTOR.Speak("I suggest u to please adjust your time, Sir");
+                        }
+                        else if (t2 == t4 || t2 == t5 || t2 < t5)
+                        {
+                            VICTOR.Speak("Sorry, It's Afternoon time Sir!");
+                            VICTOR.Speak("I suggest u to please adjust your time, Sir");
+                        }
+                        else if (t2 == t6 || t2 == t7 || t2 < t7)
+                        {
+                            VICTOR.Speak("Sorry, It's Evening time Sir!");
+                            VICTOR.Speak("I suggest u to please adjust your time, Sir");
+                        }
+                        else if (t2 == t8 || t2 == t9 || t2 < t9)
+                        {
+                            VICTOR.Speak("Good Night Sir, Have a nice sleep");
+                            Close();
+                        }
+                      break;
                     //Files 
 
                 case "Open Movies":
@@ -263,6 +342,9 @@ namespace Victor
                 case "Mute":
                     SendKeys.Send("{F1}");
                     break;
+                case "Show Downloads":
+                    SendKeys.Send("^j");
+                    break;
                 case "Volume up":
                     SendKeys.Send("^{UP}");
                     break;
@@ -273,14 +355,16 @@ namespace Victor
                     SendKeys.Send("{F3}");
                     break;
                 case "Hide Yourself":
+                    this.Opacity = .0;
                     this.WindowState = FormWindowState.Minimized;
                     break;
                 case "Show Yourself":
                     this.WindowState = FormWindowState.Minimized;
                     this.WindowState = FormWindowState.Normal;
+                    this.Opacity = .99;
                     break;
                 case "Define Yourself":
-                    VICTOR.Speak("I am a weak Artificial Intelligence developed by my dad Victor");
+                    VICTOR.Speak("I am a weak Artificial Intelligence developed by my Dad Victor");
                     break;
                 case "Page down":
                     SendKeys.Send("{PGDN}");
@@ -291,7 +375,12 @@ namespace Victor
                 case "Previous song":
                     SendKeys.Send("^b");
                     break;
-
+                case "Bookmarks":
+                    SendKeys.Send("^b");
+                    break;
+                case "Change Voice":
+                    VICTOR.SelectVoiceByHints(VoiceGender.Female);
+                    break;
                 case "hello":
                 case "hello Victor":                   
                         VICTOR.Speak("Hi sir,  I am Online");
@@ -304,7 +393,11 @@ namespace Victor
                     Close();
                     break;
                 case "Victor":
-                    VICTOR.Speak("Yes Sir");
+                    VICTOR.Speak(num);
+                    VICTOR.Speak(battstatus);
+                    VICTOR.Speak(battlife + "Percentage");
+                    VICTOR.Speak(batt + "seconds");                   
+                    VICTOR.Speak("Status is" + sam);
                     break;
                 //WEBSITES
                
@@ -347,14 +440,8 @@ namespace Victor
                     StopWindow();
                     break;
                 //CONDITION OF DAY
-                case "what time is it":
-                    DateTime now = DateTime.Now;
-                    string time = now.GetDateTimeFormats('t')[0];
-                    VICTOR.Speak(time);
-                    break;
                 case "Open":
-                case "Ok":
-                   
+                case "Ok":                   
                     SendKeys.Send("{ENTER}");
                     break;
                 case "what day is it?":
@@ -369,9 +456,13 @@ namespace Victor
                 case "go fullscreen":
                     FormBorderStyle = FormBorderStyle.None;
                     WindowState = FormWindowState.Maximized;
-                    TopMost = true;
-                    
+                    TopMost = true;                   
                     break;
+                case "what time is it":
+                    DateTime date = DateTime.Now;
+                    string time = date.ToString("hh:mm");
+                    VICTOR.Speak(time);
+                    break;  
                 case "exit fullscreen":
                    // VICTOR.Speak("As your Wish Sir");
                     FormBorderStyle = FormBorderStyle.Sizable;
@@ -395,26 +486,8 @@ namespace Victor
                 case "show listbox":
                     lstCommands.Visible = true;
                     break;
-                //SHUTDOWN RESTART LOG OFF
-               
-                
-                default:                    
-                    break;
-            }
-        }
-
-        private void ComputerTermination()
-        {
-            switch (QEvent)
-            {
-                case "shutdown":
-                    System.Diagnostics.Process.Start("shutdown", "-s");
-                    break;
-                case "logoff":
-                    System.Diagnostics.Process.Start("shutdown", "-l");
-                    break;
-                case "restart":
-                    System.Diagnostics.Process.Start("shutdown", "-r");
+                //SHUTDOWN RESTART LOG OFF                
+                default:
                     break;
             }
         }
